@@ -11,5 +11,22 @@ pipeline{
                 sh 'ls -lrt'
             }
         }
+        
+         stage("Maven Build"){
+            steps{
+                sh 'mvn clean package'
+                sh "cd ${env.WORKSPACE}/target"
+                sh 'ls -lrt'
+            }
+        }
+        
+         stage("Uploading into s3 bucket"){
+            steps{
+                sh """
+                aws s3 cp "${env.WORKSPACE}/target/myweb-0.0.2.war" "s3://ebsjavaproject/myweb-0.0.2.war"
+                
+                """
+            }
+        }
     }
 }
